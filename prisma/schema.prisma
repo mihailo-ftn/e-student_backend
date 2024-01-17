@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Grade {
+  id    String      @id @default(uuid())
+  value Int
+  exam  ExamRecord?
+}
+
+enum SubjectType {
+  REQUIRED
+  ELECTIVE
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+  PROFESSOR
+}
+
+model Modul {
+  id                String              @id @default(uuid())
+  moduleName        String
+  moduleCode        String              @unique
+  students          Student[]
+  subjects          Subject[]
+  examinationPeriod ExaminationPeriod[]
+}
+
+model Class {
+  id         String    @id @default(uuid())
+  classLabel Int
+  sudents    Student[]
+}
+
+model Student {
+  id         String       @id @default(uuid())
+  email      String       @unique
+  firstName  String
+  middleName String
+  lastName   String
+  password   String
+  jmbg       String       @unique
+  brind      String       @unique
+  birthDate  DateTime
+  role       Role         @default(STUDENT)
+  modul      Modul        @relation(fields: [modulID], references: [id])
+  modulID    String
+  class      Class        @relation(fields: [classID], references: [id])
+  classID    String
+  exams      ExamRecord[]
+}
+
+model ExamRecord {
+  id        String   @id @default(uuid())
+  points    Float    @default(0)
+  passed    Boolean  @default(false)
+  grade     Grade?   @relation(fields: [gradeID], references: [id])
+  gradeID   String?  
+  exam      Exam?    @relation(fields: [examID], references: [id])
+  examID    String?  
+  student   Student? @relation(fields: [studentID], references: [id])
+  studentID String?
+  singed    Boolean  @default(false)
+}
+
+model Exam {
+  id                String             @id @default(uuid())
+  date              DateTime
+  subject           Subject?           @relation(fields: [subjectID], references: [id])
+  subjectID         String?            
+  examinationPeriod ExaminationPeriod? @relation(fields: [exPeriodID], references: [id])
+  exPeriodID        String?
+  examRecord        ExamRecord?
+}
+
+model Subject {
+  id          String      @id @default(uuid())
+  subjectName String      @unique
+  espp        Int
+  professor   Professor   @relation(fields: [professorID], references: [id])
+  professorID String
+  exam        Exam?
+  type        SubjectType
+  modul       Modul       @relation(fields: [modulID], references: [id])
+  modulID     String
+}
+
+model Professor {
+  id        String    @id @default(uuid())
+  firstName String
+  email     String    @unique
+  lastName  String
+  subjects  Subject[]
+  password  String
+  jmbg      String    @unique
+  role      Role      @default(PROFESSOR)
+  posts Post[]
+}
+
+model ExaminationPeriod {
+  id            String   @id @default(uuid())
+  name          String
+  beginningDate DateTime
+  endDate       DateTime
+  modul         Modul?   @relation(fields: [modulID], references: [id])
+  modulID       String?
+  exams         Exam[]
+  active        Boolean  @default(true)
+}
+
+model Post {
+  id String   @id @default(uuid())
+  text String
+  creationDate DateTime
+  creator Professor @relation(fields: [creatorID], references: [id])
+  creatorID String
+  important Boolean @default(false)
+}
