@@ -1,0 +1,235 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Professor {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  jmbg: String!
+  role: Role!
+  subjects: [Subject!]
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+  PROFESSOR
+}
+
+type Class {
+  id: String!
+  classLabel: Int!
+  sudents: Student!
+}
+
+type Grade {
+  id: String!
+  value: Int!
+  exam: ExamRecord!
+}
+
+type ExamRecord {
+  examId: String!
+  id: String!
+  points: Float!
+  passed: Boolean!
+  grade: Grade!
+  gradeID: String
+  exam: Exam!
+  examID: String
+  student: Student
+  studentID: String
+  singed: Boolean!
+}
+
+type Student {
+  id: String!
+  email: String!
+  firstName: String!
+  middleName: String!
+  lastName: String!
+  jmbg: String!
+  brind: String!
+  birthDate: DateTime!
+  role: Role!
+  class: String!
+  classID: String!
+  modulID: String!
+  exams: ExamRecord!
+  password: String!
+  modul: Modul
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Modul {
+  id: String!
+  moduleName: String!
+  moduleCode: String!
+  students: [Student!]
+}
+
+type Subject {
+  id: String!
+  subjectName: String!
+  espp: Int!
+  professor: Professor!
+  professorID: String!
+  exam: Exam!
+  type: SubjectType!
+  modul: Modul!
+  modulID: String!
+}
+
+enum SubjectType {
+  REQUIRED
+  ELECTIVE
+}
+
+type ExaminationPeriod {
+  id: String!
+  name: String!
+  beginningDate: DateTime!
+  endDate: DateTime!
+  exams: [Exam!]!
+  modulID: String
+  active: Boolean
+  modul: Modul
+}
+
+type Exam {
+  id: String!
+  date: DateTime!
+  subject: Subject!
+  subjectID: String
+  examinationPeriod: ExaminationPeriod
+  exPeriodID: String
+  examRecord: ExamRecord
+}
+
+type Post {
+  id: String!
+  creationDate: DateTime!
+  creator: Professor!
+  creatorID: String
+  text: String
+  important: Boolean
+}
+
+type Query {
+  getAllEXP: [ExaminationPeriod!]!
+  isActive(id: String!): Boolean!
+  examsFromExaminationPeriod: ExaminationPeriod!
+  currentExPeriod: ExaminationPeriod!
+  getAllExams: [ExamRecord!]!
+  ExamRecordFromId(id: String!): ExamRecord!
+  getGrades: [Grade!]!
+  getAllProfessors: [Professor!]!
+  meProfessor: Professor!
+  examsFromCurrentExamPeriod: [Exam!]!
+  studentsWhoSingedExam(subjectID: String!): [ExamRecord!]!
+  professorSubjects: [Subject!]!
+  professorExams: [Exam!]!
+  getSubjects: [Subject!]!
+  getSubject(id: String!): Subject!
+  subjectsForParticularModule(moduleName: String!): [Subject!]!
+  studentsSubjects: [Subject!]!
+  getAllModuls: [Modul!]!
+  modulSubjects(id: String!): [Subject!]!
+  getClasses: [Class!]!
+  getStudents: [Student!]!
+  sumESPP: Int!
+  averageGrade: Float!
+  me: Student!
+  studentsForModul(moduleName: String!): [Student!]!
+  passedExams: [ExamRecord!]!
+  registeredExams: [ExamRecord!]!
+  getAllPosts: [Post!]!
+  getImportant: [Post!]!
+}
+
+type Mutation {
+  createExaminationPeriod(input: ExaminationPeriodInput!): ExaminationPeriod!
+  addExam(input: ExamInput!): Exam!
+  createGrade(input: GradeInput!): Grade!
+  createProfessor(input: ProfessorInput!): Professor!
+  registerPassedExam(id: String!, points: Float!): Boolean!
+  loginProfessor(email: String!, password: String!): Professor!
+  loginAdmin(email: String!, password: String!): Boolean!
+  createSubject(input: SubjectInput!): Subject!
+  createModul(input: ModulInput!): Modul!
+  createClass(input: ClassInput!): Class!
+  createStudent(input: StudentInput!): Student!
+  login(brind: String!, password: String!): Student!
+  logout: Boolean!
+  registerExam(examID: String!): Boolean!
+  deregisterExam(examID: String!): Boolean!
+  updateEmail(email: String!): Boolean!
+  updatePassword(pass: String!): Boolean!
+  createPost(input: PostInput!): Post!
+}
+
+input ExaminationPeriodInput {
+  name: String!
+  beginningDate: DateTime!
+  endDate: DateTime!
+  modulID: String!
+}
+
+input ExamInput {
+  date: DateTime!
+  subjectID: String!
+  exPeriodID: String
+}
+
+input GradeInput {
+  value: Int!
+}
+
+input ProfessorInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  jmbg: String!
+}
+
+input SubjectInput {
+  subjectName: String!
+  espp: Int!
+  professorID: String!
+  type: SubjectType!
+  modulID: String!
+}
+
+input ModulInput {
+  moduleName: String!
+  moduleCode: String!
+}
+
+input ClassInput {
+  classLabel: Int!
+}
+
+input StudentInput {
+  email: String!
+  firstName: String!
+  middleName: String!
+  lastName: String!
+  jmbg: String!
+  brind: String!
+  birthDate: DateTime!
+  modulID: String!
+  classID: String!
+}
+
+input PostInput {
+  creationDate: DateTime!
+  important: Boolean
+  text: String
+}
