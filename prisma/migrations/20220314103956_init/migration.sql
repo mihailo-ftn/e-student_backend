@@ -132,7 +132,8 @@ CREATE UNIQUE INDEX "ExamRecord_examID_key" ON "ExamRecord"("examID");
 CREATE UNIQUE INDEX "Exam_subjectID_key" ON "Exam"("subjectID");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Subject_subjectName_key" ON "Subject"("subjectName");
+CREATE UNIQUE INDEX "Subject_subjectName_modulID_key" 
+ON "Subject"("subjectName", "modulID");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Professor_email_key" ON "Professor"("email");

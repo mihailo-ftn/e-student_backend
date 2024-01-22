@@ -82,7 +82,7 @@ model Exam {
 
 model Subject {
   id          String      @id @default(uuid())
-  subjectName String      @unique
+  subjectName String
   espp        Int
   professor   Professor   @relation(fields: [professorID], references: [id])
   professorID String
@@ -90,6 +90,8 @@ model Subject {
   type        SubjectType
   modul       Modul       @relation(fields: [modulID], references: [id])
   modulID     String
+
+  @@unique([subjectName, modulID])
 }
 
 model Professor {

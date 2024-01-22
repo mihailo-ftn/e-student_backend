@@ -11,7 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis({ port: 6379, host: 'redis' });
 
   // app.use(
   //   helmet({
